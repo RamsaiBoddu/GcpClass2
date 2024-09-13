@@ -128,22 +128,17 @@
         import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-       
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyARDLbyGKcZR3-dc-2hsYwArPnWspMmJ3Q",
+            authDomain: "gcpclass2-611d3.firebaseapp.com",
+            projectId: "gcpclass2-611d3",
+            storageBucket: "gcpclass2-611d3.appspot.com",
+            messagingSenderId: "298572994318",
+            appId: "1:298572994318:web:972ee06b1fdd0fe290a95f",
+            measurementId: "G-QFBZ1G8B7X"
+        };
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyARDLbyGKcZR3-dc-2hsYwArPnWspMmJ3Q",
-    authDomain: "gcpclass2-611d3.firebaseapp.com",
-    projectId: "gcpclass2-611d3",
-    storageBucket: "gcpclass2-611d3.appspot.com",
-    messagingSenderId: "298572994318",
-    appId: "1:298572994318:web:972ee06b1fdd0fe290a95f",
-    measurementId: "G-QFBZ1G8B7X"
-  };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -174,7 +169,7 @@
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     const messageClass = data.userName === currentUser.displayName ? 'my-message' : 'other-message';
-                    messagesContainer.innerHTML += <div class="message ${messageClass}"><strong>${data.userName}</strong>: ${data.text}</div>;
+                    messagesContainer.innerHTML += `<div class="message ${messageClass}"><strong>${data.userName}</strong>: ${data.text}</div>`;
                 });
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             });
