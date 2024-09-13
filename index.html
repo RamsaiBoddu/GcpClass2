@@ -129,16 +129,18 @@
         import { getFirestore, collection, addDoc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
         // Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyARDLbyGKcZR3-dc-2hsYwArPnWspMmJ3Q",
-            authDomain: "gcpclass2-611d3.firebaseapp.com",
-            projectId: "gcpclass2-611d3",
-            storageBucket: "gcpclass2-611d3.appspot.com",
-            messagingSenderId: "298572994318",
-            appId: "1:298572994318:web:972ee06b1fdd0fe290a95f",
-            measurementId: "G-QFBZ1G8B7X"
-        };
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyARDLbyGKcZR3-dc-2hsYwArPnWspMmJ3Q",
+  authDomain: "gcpclass2-611d3.firebaseapp.com",
+  projectId: "gcpclass2-611d3",
+  storageBucket: "gcpclass2-611d3.appspot.com",
+  messagingSenderId: "298572994318",
+  appId: "1:298572994318:web:972ee06b1fdd0fe290a95f",
+  measurementId: "G-QFBZ1G8B7X"
+};
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
