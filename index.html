@@ -16,16 +16,14 @@
             height: 100vh;
             background-color: #f7f7f7;
         }
-        #login-container, #chat-container {
+        #chat-container {
             width: 100%;
             max-width: 400px;
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             background-color: white;
             border-radius: 8px;
-        }
-        #chat-container {
-            display: none;
+            display: flex;
             flex-direction: column;
             height: 400px;
         }
@@ -72,23 +70,6 @@
         #send-btn:hover {
             background-color: #0056b3;
         }
-        #google-signin-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        #google-signin-btn:hover {
-            background-color: #f0f0f0;
-        }
-        #google-signin-btn i {
-            margin-right: 10px;
-        }
         #logout-btn {
             margin-top: 10px;
             background-color: #dc3545;
@@ -104,15 +85,6 @@
     </style>
 </head>
 <body>
-    <!-- Login Container -->
-    <div id="login-container">
-        <h3>Welcome to Chat App</h3>
-        <div id="google-signin-btn" onclick="signInWithGoogle()">
-            <i class="fab fa-google"></i>
-            <span>Sign in with Google</span>
-        </div>
-    </div>
-
     <!-- Chat Container -->
     <div id="chat-container">
         <div id="messages"></div>
@@ -125,53 +97,37 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut as firebaseSignOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
         // Firebase config
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyARDLbyGKcZR3-dc-2hsYwArPnWspMmJ3Q",
-  authDomain: "gcpclass2-611d3.firebaseapp.com",
-  projectId: "gcpclass2-611d3",
-  storageBucket: "gcpclass2-611d3.appspot.com",
-  messagingSenderId: "298572994318",
-  appId: "1:298572994318:web:972ee06b1fdd0fe290a95f",
-  measurementId: "G-QFBZ1G8B7X"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyARDLbyGKcZR3-dc-2hsYwArPnWspMmJ3Q",
+            authDomain: "gcpclass2-611d3.firebaseapp.com",
+            projectId: "gcpclass2-611d3",
+            storageBucket: "gcpclass2-611d3.appspot.com",
+            messagingSenderId: "298572994318",
+            appId: "1:298572994318:web:972ee06b1fdd0fe290a95f",
+            measurementId: "G-QFBZ1G8B7X"
+        };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const loginContainer = document.getElementById('login-container');
         const chatContainer = document.getElementById('chat-container');
         const messagesContainer = document.getElementById('messages');
         const messageInput = document.getElementById('message-input');
-
-        // Listen for auth state changes
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loginContainer.style.display = 'none';
-                chatContainer.style.display = 'flex';
-                fetchMessages();
-            } else {
-                loginContainer.style.display = 'block';
-                chatContainer.style.display = 'none';
-            }
-        });
 
         // Fetch and display messages
         function fetchMessages() {
             const messagesQuery = query(collection(db, 'messages'), orderBy('timestamp'));
             onSnapshot(messagesQuery, (querySnapshot) => {
                 messagesContainer.innerHTML = '';
-                const currentUser = auth.currentUser;
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    const messageClass = data.userName === currentUser.displayName ? 'my-message' : 'other-message';
-                    messagesContainer.innerHTML += `<div class="message ${messageClass}"><strong>${data.userName}</strong>: ${data.text}</div>`;
+                    messagesContainer.innerHTML += `<div class="message"><strong>${data.userName}</strong>: ${data.text}</div>`;
                 });
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             });
@@ -183,13 +139,10 @@ const firebaseConfig = {
             const message = messageInput.value.trim();
             if (!message) return;
 
-            const user = auth.currentUser;
-            if (!user) return;
-
             try {
                 await addDoc(collection(db, 'messages'), {
                     text: message,
-                    userName: user.displayName,
+                    userName: "Anonymous", // Set a default username since no auth
                     timestamp: new Date()
                 });
                 messageInput.value = '';
@@ -198,22 +151,17 @@ const firebaseConfig = {
             }
         }
 
-        // Sign in with Google
-        function signInWithGoogle() {
-            const provider = new GoogleAuthProvider();
-            signInWithPopup(auth, provider)
-                .catch(error => console.error('Error during sign-in:', error.message));
-        }
-
-        // Sign out
+        // Log out
         function logoutUser() {
-            firebaseSignOut(auth).catch(error => console.error('Error during sign-out:', error.message));
+            console.log("No authentication to log out from.");
         }
 
         // Attach functions to window object
-        window.signInWithGoogle = signInWithGoogle;
         window.logoutUser = logoutUser;
         window.sendMessage = sendMessage;
+
+        // Fetch messages initially
+        fetchMessages();
     </script>
 </body>
 </html>
